@@ -10,5 +10,14 @@
   <%= @user.email %>
 </p>
 
+<p>
+  <strong>micropost:</strong>
+  <% if @microposts = Micropost.where(user_id: @user.id) %>
+  	<% for micropost in @microposts do %>
+  		<br><%= micropost.content %>
+  	<% end %>
+  <% end %>
+</p>
+
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
