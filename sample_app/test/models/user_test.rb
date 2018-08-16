@@ -39,4 +39,44 @@ class UserTest < ActiveSupport::TestCase
     @user.user_id = "a"*51
     assert_not @user.valid?
   end
+
+  test "email validation should acept valid addresses" do
+    valid_addresses = %w[user@example.com User@foo.COM
+                        A_US-ER@foo.bar.org first.last@foo.jp
+                        alice+bob@baz.cn]
+    valid_addresses.each do |valid_address|
+      @user.email= valid_address
+      assert @user.valid?, "#{valid_address.inspect} should be valid"
+    end
+  end
+
+  test "email validation should reject invalid addresses" do
+    invalid_addresses = %w[user@example,com user_at_foo.org
+                          user.came@example. foo@bar_baz.com
+                          foo@bar+baz.com user@example..com]
+    invalid_addresses.each do |invalid_address|
+      @user.email = invalid_address
+      assert_not @user.valid?,"#{invalid_address.inspect} should be invalid"
+    end
+  end
+
+  test "user_id validation should acept valid user_id" do
+    valid_user_ids = %w[users User.foo A-ER.bar first-last 24156
+                        user2 User.3fo A-4hd]
+    valid_user_ids.each do |valid_user_id|
+      @user.user_id= valid_user_id
+      assert @user.valid?, "#{valid_user_id.inspect} should be valid"
+    end
+  end
+
+  test "user_id validation should reject invalid user_id" do
+    invalid_user_ids = %w[user@ +83bfj _8fbicn ,nahoj
+                          /gafsa \gags |asfs ga~53 =jfna \fnjsc
+                          !dajbi #ndjab $fnan %nfaln &njlfa
+                           :fnaa ;kanfpa <fanpa ]
+    invalid_user_ids.each do |invalid_user_id|
+      @user.user_id = invalid_user_id
+      assert_not @user.valid?,"#{invalid_user_id.inspect} should be invalid"
+    end
+  end
 end
