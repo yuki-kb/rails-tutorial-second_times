@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   
   def setup
-  	@user = User.new(name:"Example User",email:"user@example.com",user_id:"emaple")
+  	@user = User.new(name:"Example User",email:"User@example.com",user_id:"Example")
   end
 
   test "should be valid" do
@@ -78,5 +78,35 @@ class UserTest < ActiveSupport::TestCase
       @user.user_id = invalid_user_id
       assert_not @user.valid?,"#{invalid_user_id.inspect} should be invalid"
     end
+  end
+
+  test "email addresses should be unique" do
+    duplicate_user = @user.dup
+    duplicate_user.email = @user.email.downcase
+    duplicate_user.user_id = "test"
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test "user_id addresses should be unique" do
+    duplicate_user = @user.dup
+    duplicate_user.user_id = @user.user_id.upcase
+    duplicate_user.email = "test@gmail.com"
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test "email addresses should be saved as lower-case" do
+    mixed_case_email = "Foo@ExAMPle.CoM"
+    @user.email = mixed_case_email
+    @user.save
+    assert_equal mixed_case_email.downcase,@user.reload.email
+  end
+
+  test "user_id addresses should be saved as lower-case" do
+    mixed_case_user_id = "FooExAMPle.CoM"
+    @user.user_id = mixed_case_user_id
+    @user.save
+    assert_equal mixed_case_user_id.downcase,@user.reload.user_id
   end
 end
