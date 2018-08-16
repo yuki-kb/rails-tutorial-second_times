@@ -10,4 +10,5 @@ class User < ApplicationRecord
 	validates :user_id,presence: true,length: {maximum: 50},
 					format: {with:VALID_USER_ID_REGEX},
 					uniqueness: {case_sensitive: false}
+	has_secure_password
 end
