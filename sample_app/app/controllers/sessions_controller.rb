@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   	if user && user.authenticate(params[:session][:password])
   		#ユーザーページにリダイレクト
   	else
-  		#エラーメッセ表示
+  		flash.now[:danger] = 'Invalid email/password combination'
   		render 'new'
   	end
   end
